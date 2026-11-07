@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой IP и данные устройства</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0f172a; /* Сплошной темный фон, как на скрине */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: #e2e8f0;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        h1 span {
+            font-size: 1.4rem;
+        }
+
+        .ip-box {
+            background: #0b1120;
+            border-radius: 1.5rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: border-color 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .ip-box.has-value {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        #ipValue {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            word-break: break-all;
+            color: #bae6fd;
+            line-height: 1.2;
+        }
+
+        #ipValue.placeholder {
+            color: #475569;
+            font-size: 1.2rem;
+            font-family: inherit;
+            font-weight: 400;
+        }
+
+        button {
+            width: 100%;
+            background: #2563eb;
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 18px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        button:hover:not(:disabled) {
+            background: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Стили для новых данных (система, браузер, устройство) */
+        .device-info {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            border-top: 1px solid #334155;
+            padding-top: 1.5rem;
+        }
+
+        .info-item {
+            background: #0f172a;
+            padding: 0.8rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #1e293b;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-item:last-child {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .error-message {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #fca5a5;
+            background: rgba(127, 29, 29, 0.2);
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            border: 1px solid rgba(185, 28, 28, 0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>
+            <span>🌐</span> Мой IP
+        </h1>
+
+        <div class="ip-box" id="ipBox">
+            <span class="meta-label">ваш публичный IP</span>
+            <div id="ipValue" class="placeholder">— не запрошен —</div>
+        </div>
+
+        <button id="fetchBtn">
+            <span id="btnText">Узнать данные</span>
+            <span id="btnLoader" class="loader hidden"></span>
+        </button>
+
+        <div id="errorBox" class="error-message hidden"></div>
+
+        <!-- Блок с дополнительной информацией -->
+        <div class="device-info" id="deviceInfo">
+            <div class="info-item">
+                <span class="info-label">Устройство</span>
+                <span class="info-value" id="infoDevice">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Браузер</span>
+                <span class="info-value" id="infoBrowser">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Операционная система</span>
+                <span class="info-value" id="infoOS">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Язык / Часовой пояс</span>
+                <span class="info-value" id="infoTimezone">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Разрешение экрана</span>
+                <span class="info-value" id="infoScreen">—</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const btn = document.getElementById('fetchBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const ipBox = document.getElementById('ipBox');
+            const ipValue = document.getElementById('ipValue');
+            const errorBox = document.getElementById('errorBox');
+
+            // Элементы для вывода системной информации
+            const infoDevice = document.getElementById('infoDevice');
+            const infoBrowser = document.getElementById('infoBrowser');
+            const infoOS = document.getElementById('infoOS');
+            const infoTimezone = document.getElementById('infoTimezone');
+            const infoScreen = document.getElementById('infoScreen');
+
+            // --- ФУНКЦИИ ОПРЕДЕЛЕНИЯ ДАННЫХ УСТРОЙСТВА ---
+
+            function getDeviceType() {
+                const ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return 'Планшет';
+                if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return 'Смартфон';
+                return 'Компьютер / Ноутбук';
+            }
+
+            function getBrowser() {
+                const ua = navigator.userAgent;
+                if (ua.includes('Firefox')) return 'Mozilla Firefox';
+                if (ua.includes('SamsungBrowser')) return 'Samsung Internet';
+                if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
+                if (ua.includes('Edge') || ua.includes('Edg')) return 'Microsoft Edge';
+                if (ua.includes('Chrome') || ua.includes('CriOS')) return 'Google Chrome';
+                if (ua.includes('Safari')) return 'Apple Safari';
+                return 'Неизвестный браузер';
+            }
+
+            function getOS() {
+                const ua = navigator.userAgent;
+                if (ua.includes('Windows NT 10.0')) return 'Windows 10/11';
+                if (ua.includes('Windows NT 6.3')) return 'Windows 8.1';
+                if (ua.includes('Windows NT 6.1')) return 'Windows 7';
+                if (ua.includes('Mac OS X')) return 'macOS';
+                if (ua.includes('Android')) return 'Android';
+                if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS / iPadOS';
+                if (ua.includes('Linux')) return 'Linux';
+                return 'Неизвестная ОС';
+            }
+
+            function updateDeviceInfo() {
+                // Определяем данные
+                infoDevice.textContent = getDeviceType();
+                infoBrowser.textContent = getBrowser();
+                infoOS.textContent = getOS();
+                
+                // Часовой пояс и язык
+                const lang = navigator.language || 'ru-RU';
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Неизвестно';
+                infoTimezone.textContent = `${lang} / ${tz}`;
+
+                // Разрешение экрана
+                infoScreen.textContent = `${window.screen.width} × ${window.screen.height} px`;
+            }
+
+            // --- ФУНКЦИИ ДЛЯ РАБОТЫ С IP И UI ---
+
+            function setLoading(isLoading) {
+                btn.disabled = isLoading;
+                if (isLoading) {
+                    btnText.textContent = 'Загрузка...';
+                    btnLoader.classList.remove('hidden');
+                } else {
+                    btnText.textContent = 'Узнать данные';
+                    btnLoader.classList.add('hidden');
+                }
+            }
+
+            function showError(message) {
+                errorBox.textContent = message;
+                errorBox.classList.remove('hidden');
+                setTimeout(() => {
+                    errorBox.classList.add('hidden');
+                }, 6000);
+            }
+
+            async function fetchData() {
+                errorBox.classList.add('hidden');
+                setLoading(true);
+
+                // 1. Сразу обновляем локальные данные устройства (они не требуют интернета)
+                updateDeviceInfo();
+
+                try {
+                    // 2. Запрашиваем IP (используем API ipify)
+                    // Добавляем &r=... для обхода кэша
+                    const url = 'https://api.ipify.org?format=json&r=' + Date.now();
+                    const response = await fetch(url, { cache: 'no-store' });
+
+                    if (!response.ok) {
+                        throw new Error(`Ошибка сервера: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (!data || !data.ip) {
+                        throw new Error('API вернул некорректный ответ');
+                    }
+
+                    // Успешно получили IP
+                    ipValue.textContent = data.ip;
+                    ipValue.classList.remove('placeholder');
+                    ipBox.classList.add('has-value');
+
+                } catch (err) {
+                    console.error('Ошибка:', err);
+                    showError('Не удалось получить IP-адрес. Проверьте интернет или VPN/блокировщики.');
+                    
+                    ipValue.textContent = '— ошибка —';
+                    ipValue.classList.add('placeholder');
+                    ipBox.classList.remove('has-value');
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            // Навешиваем событие на кнопку
+            btn.addEventListener('click', fetchData);
+            
+            // При загрузке страницы сразу подтягиваем данные об устройстве (без IP)
+            // Это делает интерфейс более живым до нажатия кнопки
+            updateDeviceInfo();
+        })();
+    </script>
+</body>
+</html>

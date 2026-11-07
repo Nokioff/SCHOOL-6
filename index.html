@@ -1,3 +1,11 @@
+Вот обновленный код. Я добавил:
+1. **Полноэкранный режим:** при нажатии на кнопку сайт разворачивается на весь экран.
+2. **Закрытие по ESC:** при нажатии на клавишу `Esc` полноэкранный режим отключается и модальное окно закрывается.
+3. **Модель фурри слева:** в модальное окно слева добавлена стилизованная SVG-иллюстрация милого зверька (волчонка/лисёнка), которая смотрит на собранные данные.
+
+Код готов к копированию и загрузке на GitHub:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -26,15 +34,8 @@
             border-bottom: 5px solid #e67e22;
         }
 
-        header h1 {
-            font-size: 26px;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 15px;
-            color: #bdc3c7;
-        }
+        header h1 { font-size: 26px; margin-bottom: 5px; }
+        header p { font-size: 15px; color: #bdc3c7; }
 
         .container {
             max-width: 900px;
@@ -57,10 +58,7 @@
             font-size: 16px;
             font-weight: bold;
         }
-
-        nav a:hover {
-            color: #e67e22;
-        }
+        nav a:hover { color: #e67e22; }
 
         main {
             background: white;
@@ -91,17 +89,14 @@
             margin-top: 20px;
             transition: background 0.2s;
         }
+        .btn-school:hover { background-color: #d35400; }
 
-        .btn-school:hover {
-            background-color: #d35400;
-        }
-
-        /* Стили для модального окна */
+        /* --- СТИЛИ МОДАЛЬНОГО ОКНА (ПОЛНЫЙ ЭКРАН) --- */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(15, 23, 42, 0.95); /* Темный фон на весь экран */
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -109,81 +104,102 @@
         }
 
         .modal-content {
-            background: #fff;
+            background: #1e293b;
             width: 100%;
-            max-width: 500px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 800px; /* Шире, чтобы влезла фурри */
+            border-radius: 12px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: row; /* Данные справа, фурри слева */
             animation: modalIn 0.3s ease-out;
+            border: 1px solid #334155;
         }
 
         @keyframes modalIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Левая часть с фурри */
+        .furry-side {
+            width: 300px;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-right: 2px solid #334155;
+        }
+
+        .furry-svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.2));
+        }
+
+        /* Правая часть с данными */
+        .data-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
-            background: #1a3b5c;
+            background: #0f172a;
             color: white;
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #334155;
         }
 
-        .modal-header h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            line-height: 1;
+        .modal-header h3 { margin: 0; font-size: 18px; color: #bae6fd; }
+        
+        .esc-hint {
+            font-size: 12px;
+            color: #64748b;
+            background: #1e293b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #334155;
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 25px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto;
+            max-height: 70vh; /* Чтобы можно было скроллить, если экран маленький */
         }
 
         .data-row {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+            padding: 12px 0;
             font-size: 14px;
         }
+        .data-row:last-child { border-bottom: none; }
 
-        .data-row:last-child {
-            border-bottom: none;
-        }
-
-        .data-label {
-            color: #666;
-            font-weight: 500;
-        }
-
+        .data-label { color: #94a3b8; font-weight: 500; }
         .data-value {
             font-weight: bold;
-            color: #222;
+            color: #e2e8f0;
             text-align: right;
             word-break: break-all;
             max-width: 60%;
         }
 
-        .badge-ok { color: #27ae60; }
-        .badge-err { color: #c0392b; }
+        .badge-ok { color: #4ade80; }
+        .badge-err { color: #f87171; }
 
         #loadingText {
             text-align: center;
-            color: #666;
+            color: #94a3b8;
             font-style: italic;
+            padding: 40px 0;
         }
 
         footer {
@@ -192,6 +208,20 @@
             color: #7f8c8d;
             font-size: 14px;
             margin-top: 40px;
+        }
+
+        /* Адаптивность для телефонов */
+        @media (max-width: 650px) {
+            .modal-content {
+                flex-direction: column; /* На телефонах фурри сверху, данные снизу */
+            }
+            .furry-side {
+                width: 100%;
+                height: 180px;
+                border-right: none;
+                border-bottom: 2px solid #334155;
+            }
+            .furry-svg { width: 120px; }
         }
     </style>
 </head>
@@ -217,7 +247,6 @@
             
             <p style="margin-top: 15px;">Для проверки работы школьного портала и вашего подключения к сети, вы можете нажать на кнопку ниже.</p>
             
-            <!-- Кнопка, открывающая данные -->
             <button class="btn-school" id="openModalBtn">Проверить подключение</button>
         </main>
 
@@ -226,43 +255,110 @@
         </footer>
     </div>
 
-    <!-- Модальное окно с данными -->
+    <!-- Модальное окно -->
     <div class="modal-overlay" id="dataModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>Информация о системе</h3>
-                <button class="close-btn" id="closeModalBtn">&times;</button>
+            
+            <!-- ЛЕВАЯ ЧАСТЬ: ФУРРИ -->
+            <div class="furry-side">
+                <!-- Векторный рисунок милого волчонка/лисёнка -->
+                <svg class="furry-svg" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Уши -->
+                    <path d="M40 70 L20 20 L80 50 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M160 70 L180 20 L120 50 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M40 70 L35 40 L65 55 Z" fill="#f472b6" stroke="none"/>
+                    <path d="M160 70 L165 40 L135 55 Z" fill="#f472b6" stroke="none"/>
+                    <!-- Голова -->
+                    <ellipse cx="100" cy="120" rx="75" ry="65" fill="#60a5fa" stroke="#1e3a8a" stroke-width="4"/>
+                    <!-- Мордочка -->
+                    <ellipse cx="100" cy="150" rx="45" ry="30" fill="#bae6fd" />
+                    <!-- Глаза -->
+                    <circle cx="70" cy="110" r="10" fill="#0f172a" />
+                    <circle cx="130" cy="110" r="10" fill="#0f172a" />
+                    <!-- Блики в глазах -->
+                    <circle cx="73" cy="107" r="3" fill="white" />
+                    <circle cx="133" cy="107" r="3" fill="white" />
+                    <!-- Нос -->
+                    <path d="M95 145 Q100 155 105 145 Z" fill="#1e3a8a" />
+                    <!-- Рот -->
+                    <path d="M100 150 L100 160 M100 160 Q90 165 85 160 M100 160 Q110 165 115 160" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Шея и тело (свитер) -->
+                    <path d="M50 180 Q100 200 150 180 L170 250 L30 250 Z" fill="#e67e22" stroke="#1e3a8a" stroke-width="4"/>
+                    <!-- Воротник -->
+                    <path d="M70 185 Q100 210 130 185" fill="none" stroke="#1e3a8a" stroke-width="4"/>
+                </svg>
             </div>
-            <div class="modal-body" id="modalBody">
-                <p id="loadingText">Сбор данных... Пожалуйста, подождите.</p>
-                <div id="dataContainer" style="display: none;">
-                    <!-- Сюда будут вставляться данные -->
+
+            <!-- ПРАВАЯ ЧАСТЬ: ДАННЫЕ -->
+            <div class="data-side">
+                <div class="modal-header">
+                    <h3>Информация о системе</h3>
+                    <span class="esc-hint">Нажмите ESC для выхода</span>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <p id="loadingText">Сбор данных... Пожалуйста, подождите.</p>
+                    <div id="dataContainer" style="display: none;"></div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
         (function() {
             const openBtn = document.getElementById('openModalBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
             const modal = document.getElementById('dataModal');
             const loadingText = document.getElementById('loadingText');
             const dataContainer = document.getElementById('dataContainer');
             let isDataFetched = false;
 
-            // Функция открытия/закрытия
-            function toggleModal(show) {
-                modal.style.display = show ? 'flex' : 'none';
-                if (show && !isDataFetched) {
+            // --- ФУНКЦИИ ОТКРЫТИЯ И ЗАКРЫТИЯ ---
+            
+            function openModal() {
+                modal.style.display = 'flex';
+                
+                // Запрос на полноэкранный режим
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log('Fullscreen error:', err); // Некоторые браузеры могут блокировать
+                    });
+                }
+
+                if (!isDataFetched) {
                     fetchSystemData();
                 }
             }
 
-            openBtn.addEventListener('click', () => toggleModal(true));
-            closeBtn.addEventListener('click', () => toggleModal(false));
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) toggleModal(false);
+            function closeModal() {
+                modal.style.display = 'none';
+                
+                // Выход из полноэкранного режима, если мы в нем
+                if (document.fullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(err => console.log(err));
+                    }
+                }
+            }
+
+            // Открытие по кнопке
+            openBtn.addEventListener('click', openModal);
+
+            // Закрытие по клавише ESC
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    // Если окно открыто — закрываем
+                    if (modal.style.display === 'flex') {
+                        closeModal();
+                    }
+                }
+            });
+
+            // Дополнительно: если пользователь сам выйдет из полноэкранного режима (например, через меню браузера или F11),
+            // то модальное окно тоже закроется.
+            document.addEventListener('fullscreenchange', function() {
+                if (!document.fullscreenElement && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                }
             });
 
             // --- СБОР ДАННЫХ ---
@@ -317,7 +413,6 @@
 
                 // 5. Видеокарта (WebGPU и WebGL)
                 try {
-                    // Пытаемся через современный WebGPU (дает больше данных)
                     if (navigator.gpu) {
                         const adapter = await navigator.gpu.requestAdapter();
                         if (adapter && adapter.info) {
@@ -325,7 +420,6 @@
                             if (adapter.info.architecture) gpu += ` (${adapter.info.architecture})`;
                         }
                     } 
-                    // Если WebGPU нет или не дал результатов, пробуем WebGL
                     if (gpu === 'Определение...') {
                         const canvas = document.createElement('canvas');
                         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -372,3 +466,4 @@
     </script>
 </body>
 </html>
+```

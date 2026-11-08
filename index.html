@@ -3,151 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>МБОУ СОШ 6 - Официальный сайт</title>
+    <title>МБОУ СОШ № 6 г. Сегежи - Официальный сайт</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Times New Roman', Times, serif; background-color: #f4f7f6; color: #222; line-height: 1.6; }
+        
         header { background-color: #1a3b5c; color: white; padding: 25px 0; text-align: center; border-bottom: 5px solid #e67e22; }
         header h1 { font-size: 26px; margin-bottom: 5px; }
         header p { font-size: 15px; color: #bdc3c7; }
+        
         .container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+        
         nav { background: #ecf0f1; padding: 12px; border-radius: 4px; margin-bottom: 25px; text-align: center; }
         nav a { color: #1a3b5c; text-decoration: none; margin: 0 15px; font-size: 16px; font-weight: bold; }
-        main { background: white; padding: 30px; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        nav a:hover { color: #e67e22; }
+        
+        main { background: white; padding: 30px; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h2 { color: #1a3b5c; margin-bottom: 15px; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; font-size: 22px; }
-        .btn-school { display: inline-block; background-color: #e67e22; color: white; padding: 12px 24px; font-size: 16px; font-family: inherit; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        
+        .director-word { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+        .director-avatar { width: 120px; height: 120px; background: #1a3b5c; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 50px; flex-shrink: 0; }
+        
+        .info-block { background: #f9f9f9; padding: 15px; border-left: 4px solid #e67e22; margin: 20px 0; font-size: 15px; }
+        .info-block p { margin-bottom: 5px; }
+        
+        .news-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+        .news-item:last-child { border-bottom: none; }
+        .news-date { font-size: 12px; color: #7f8c8d; }
+        
+        .btn-school { display: inline-block; background-color: #e67e22; color: white; padding: 10px 20px; font-size: 14px; font-family: inherit; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
         .btn-school:hover { background-color: #d35400; }
         
-        .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .auth-box { background: #fff; padding: 30px; border-radius: 8px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; }
-        .auth-box h3 { margin-bottom: 20px; color: #1a3b5c; }
+        footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; margin-top: 20px; }
+        footer a { color: #7f8c8d; text-decoration: none; margin: 0 5px; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Модальное окно */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background: #fff; padding: 25px; border-radius: 8px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; max-height: 80vh; overflow-y: auto; }
+        .modal-box h3 { margin-bottom: 15px; color: #1a3b5c; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; background: none; border: none; }
+        .modal-close:hover { color: #333; }
+        
         .auth-input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
         .auth-error { color: #e74c3c; font-size: 14px; margin-bottom: 10px; display: none; }
-
-        .data-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 1001; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #1e293b; width: 100%; max-width: 800px; border-radius: 12px; display: flex; flex-direction: row; overflow: hidden; border: 1px solid #334155; }
-        .furry-side { width: 280px; background: #0f172a; display: flex; align-items: center; justify-content: center; padding: 20px; border-right: 2px solid #334155; }
-        .furry-svg { width: 100%; height: auto; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.2)); }
-        .data-side { flex: 1; display: flex; flex-direction: column; }
-        .modal-header { background: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .modal-header h3 { margin: 0; font-size: 18px; color: #bae6fd; }
-        .close-btn { background: none; border: none; color: #94a3b8; font-size: 28px; cursor: pointer; }
-        .close-btn:hover { color: white; }
-        .modal-body { padding: 25px; font-family: 'Segoe UI', Tahoma, sans-serif; overflow-y: auto; max-height: 70vh; }
-        .data-row { display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding: 12px 0; font-size: 14px; }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { color: #94a3b8; font-weight: 500; }
-        .data-value { font-weight: bold; color: #e2e8f0; text-align: right; word-break: break-all; max-width: 60%; }
-        .badge-ok { color: #4ade80; }
-        .badge-err { color: #f87171; }
-        footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; margin-top: 40px; }
         
-        @media (max-width: 650px) {
-            .modal-content { flex-direction: column; }
-            .furry-side { width: 100%; height: 160px; border-right: none; border-bottom: 2px solid #334155; }
-            .furry-svg { width: 100px; }
-        }
+        .data-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; }
+        .data-label { color: #666; }
+        .data-value { font-weight: bold; color: #222; text-align: right; }
+        
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .history-table th, .history-table td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+        .history-table th { background: #f4f7f6; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Муниципальное бюджетное общеобразовательное учреждение</h1>
-        <p>«Средняя общеобразовательная школа № 6»</p>
+        <p>«Средняя общеобразовательная школа № 6 г. Сегежи»</p>
     </header>
 
     <div class="container">
         <nav>
             <a href="#">Главная</a>
-            <a href="#">Расписание</a>
-            <a href="#">Учителям</a>
-            <a href="#">Ученикам</a>
+            <a href="#">Сведения об ОО</a>
+            <a href="#">Педагогический состав</a>
+            <a href="#">Новости</a>
             <a href="#">Контакты</a>
         </nav>
 
         <main>
             <h2>Добро пожаловать на наш сайт!</h2>
-            <p>Мы рады приветствовать вас на официальном портале МБОУ СОШ 6.</p>
-            <p style="margin-top: 15px;">Для доступа к технической информации портала авторизуйтесь.</p>
-            <button class="btn-school" id="showAuthBtn">Проверить подключение</button>
+            
+            <div class="director-word">
+                <div class="director-avatar">👤</div>
+                <div>
+                    <p><strong>Уважаемые родители, ученики и гости!</strong></p>
+                    <p>Рада приветствовать вас на официальном сайте нашей школы. Здесь вы найдете актуальную информацию о жизни школы, расписании, документах и многом другом.</p>
+                    <p style="margin-top:10px;"><em>Директор школы: Осипова Наталья Николаевна</em></p>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <p><strong>Наш адрес:</strong> 186422, Республика Карелия, Сегежский муниципальный округ, г. Сегежа, проезд Монтажников, д. 4</p>
+                <p><strong>Телефон:</strong> 8 (81431) 7-31-22</p>
+                <p><strong>Email:</strong> school6.segezha@yandex.ru</p>
+            </div>
+
+            <h2 style="margin-top:30px;">Новости</h2>
+            <div class="news-item">
+                <div class="news-date">15 октября 2024</div>
+                <p><strong>Осенний кросс</strong> — наши ученики заняли призовые места на районных соревнованиях!</p>
+            </div>
+            <div class="news-item">
+                <div class="news-date">10 октября 2024</div>
+                <p><strong>Запись в кружки</strong> — открыта запись на робототехнику для 5-8 классов.</p>
+            </div>
+            <div class="news-item">
+                <div class="news-date">1 октября 2024</div>
+                <p><strong>День учителя</strong> — поздравляем всех педагогов с профессиональным праздником!</p>
+            </div>
         </main>
-        <footer>&copy; 2024 МБОУ СОШ № 6. Все права защищены.</footer>
+
+        <footer>
+            &copy; 2024 МБОУ СОШ № 6 г. Сегежи. Все права защищены.
+            <br><br>
+            <a href="#" id="adminLoginBtn">Вход для администратора</a>
+        </footer>
     </div>
 
-    <div class="auth-modal" id="authModal">
-        <div class="auth-box">
-            <h3>Вход для сотрудников</h3>
+    <!-- МОДАЛЬНОЕ ОКНО ВХОДА -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box" style="max-width: 350px;">
+            <button class="modal-close" id="closeAuthBtn">&times;</button>
+            <h3>Вход для администратора</h3>
             <div class="auth-error" id="authError">Неверный логин или пароль</div>
             <input type="text" id="loginInput" class="auth-input" placeholder="Логин">
             <input type="password" id="passwordInput" class="auth-input" placeholder="Пароль">
-            <button class="btn-school" id="loginBtn" style="width: 100%; margin-top: 0;">Войти</button>
-            <button id="closeAuthBtn" style="background:none; border:none; color:#7f8c8d; margin-top:15px; cursor:pointer; font-size:14px;">Отмена</button>
+            <button class="btn-school" id="loginBtn" style="width:100%;">Войти</button>
         </div>
     </div>
 
-    <div class="data-modal" id="dataModal">
-        <div class="modal-content">
-            <div class="furry-side">
-                <svg class="furry-svg" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M40 70 L20 20 L80 50 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
-                    <path d="M160 70 L180 20 L120 50 Z" fill="#3b82f6" stroke="#1e3a8a" stroke-width="4" stroke-linejoin="round"/>
-                    <path d="M40 70 L35 40 L65 55 Z" fill="#f472b6" stroke="none"/>
-                    <path d="M160 70 L165 40 L135 55 Z" fill="#f472b6" stroke="none"/>
-                    <ellipse cx="100" cy="120" rx="75" ry="65" fill="#60a5fa" stroke="#1e3a8a" stroke-width="4"/>
-                    <ellipse cx="100" cy="150" rx="45" ry="30" fill="#bae6fd" />
-                    <circle cx="70" cy="110" r="10" fill="#0f172a" />
-                    <circle cx="130" cy="110" r="10" fill="#0f172a" />
-                    <circle cx="73" cy="107" r="3" fill="white" />
-                    <circle cx="133" cy="107" r="3" fill="white" />
-                    <path d="M95 145 Q100 155 105 145 Z" fill="#1e3a8a" />
-                    <path d="M100 150 L100 160 M100 160 Q90 165 85 160 M100 160 Q110 165 115 160" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M50 180 Q100 200 150 180 L170 250 L30 250 Z" fill="#e67e22" stroke="#1e3a8a" stroke-width="4"/>
-                    <path d="M70 185 Q100 210 130 185" fill="none" stroke="#1e3a8a" stroke-width="4"/>
-                </svg>
-            </div>
-            <div class="data-side">
-                <div class="modal-header">
-                    <h3>Информация о системе</h3>
-                    <button class="close-btn" id="closeDataBtn">&times;</button>
-                </div>
-                <div class="modal-body" id="modalBody">
-                    <p id="loadingText" style="text-align: center; color: #94a3b8; padding: 40px 0;">Сбор данных... Пожалуйста, подождите.</p>
-                    <div id="dataContainer" style="display: none;"></div>
-                </div>
+    <!-- МОДАЛЬНОЕ ОКНО С ДАННЫМИ -->
+    <div class="modal-overlay" id="dataModal">
+        <div class="modal-box" style="max-width: 600px;">
+            <button class="modal-close" id="closeDataBtn">&times;</button>
+            <h3>Информация о системе</h3>
+            <div id="dataContainer"></div>
+            
+            <h3 style="margin-top:20px;">История входов (этот браузер)</h3>
+            <div id="historyContainer">
+                <p style="font-size:14px; color:#666;">История пуста.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // ВНИМАНИЕ! ТУТ ЗАШИФРОВАННЫЙ ЛОГИН И ПАРОЛЬ
-        // Я зашифровал "admin:123456789_0" в Base64. 
-        // Если хочешь поменять, иди на base64encode.org, введи "логин:пароль" и вставь сюда.
+        // Логин: admin, Пароль: 123456789_0
         const SECRET_BASE64 = 'YWRtaW46MTIzNDU2Nzg5XzA=';
         
         const authModal = document.getElementById('authModal');
         const dataModal = document.getElementById('dataModal');
-        const showAuthBtn = document.getElementById('showAuthBtn');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
         const closeAuthBtn = document.getElementById('closeAuthBtn');
+        const closeDataBtn = document.getElementById('closeDataBtn');
         const loginBtn = document.getElementById('loginBtn');
         const loginInput = document.getElementById('loginInput');
         const passwordInput = document.getElementById('passwordInput');
         const authError = document.getElementById('authError');
-        const closeDataBtn = document.getElementById('closeDataBtn');
-        const loadingText = document.getElementById('loadingText');
         const dataContainer = document.getElementById('dataContainer');
+        const historyContainer = document.getElementById('historyContainer');
 
-        let isDataFetched = false;
-
-        showAuthBtn.addEventListener('click', () => {
+        // Открытие входа
+        adminLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             authModal.style.display = 'flex';
             authError.style.display = 'none';
         });
 
-        closeAuthBtn.addEventListener('click', () => {
-            authModal.style.display = 'none';
+        // Закрытие
+        closeAuthBtn.addEventListener('click', () => authModal.style.display = 'none');
+        closeDataBtn.addEventListener('click', () => dataModal.style.display = 'none');
+        
+        // Закрытие по клику на фон
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) authModal.style.display = 'none';
+            if (e.target === dataModal) dataModal.style.display = 'none';
         });
 
-        loginBtn.addEventListener('click', () => {
+        // Проверка пароля
+        loginBtn.addEventListener('click', async () => {
             const login = loginInput.value.trim();
             const pass = passwordInput.value.trim();
 
@@ -157,64 +183,27 @@
                 return;
             }
 
-            // Расшифровываем правильные данные из Base64
-            const validCredentials = atob(SECRET_BASE64); // Получится "admin:123456789_0"
-            
-            // Собираем то, что ввел юзер
+            const validCredentials = atob(SECRET_BASE64);
             const inputCredentials = login + ':' + pass;
 
             if (inputCredentials === validCredentials) {
-                // Успех
                 authModal.style.display = 'none';
                 loginInput.value = '';
                 passwordInput.value = '';
                 authError.style.display = 'none';
-                openDataModal();
+                
+                await showAdminData();
+                dataModal.style.display = 'flex';
             } else {
-                // Ошибка
                 authError.textContent = 'Неверный логин или пароль';
                 authError.style.display = 'block';
             }
         });
 
-        function openDataModal() {
-            dataModal.style.display = 'flex';
-            try {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen().catch(() => {});
-                }
-            } catch(e) {}
-
-            if (!isDataFetched) {
-                fetchSystemData();
-            }
-        }
-
-        function closeDataModal() {
-            dataModal.style.display = 'none';
-            try {
-                if (document.fullscreenElement) {
-                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-                }
-            } catch(e) {}
-        }
-
-        closeDataBtn.addEventListener('click', closeDataModal);
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (authModal.style.display === 'flex') authModal.style.display = 'none';
-                if (dataModal.style.display === 'flex') closeDataModal();
-            }
-        });
-
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && dataModal.style.display === 'flex') {
-                dataModal.style.display = 'none';
-            }
-        });
-
-        async function fetchSystemData() {
+        // Сбор данных
+        async function showAdminData() {
+            dataContainer.innerHTML = '<p style="text-align:center; color:#999;">Сбор данных...</p>';
+            
             let ip = 'Ошибка', os = 'Неизвестно', browser = 'Неизвестно', cpu = 'Неизвестно', ram = 'Скрыто', gpu = 'Скрыто', screen = 'Неизвестно';
 
             try {
@@ -233,7 +222,7 @@
                 else if (ua.includes('Chrome')) browser = 'Google Chrome';
                 else if (ua.includes('Safari')) browser = 'Apple Safari';
 
-                if (navigator.hardwareConcurrency) cpu = navigator.hardwareConcurrency + ' ядер/потоков';
+                if (navigator.hardwareConcurrency) cpu = navigator.hardwareConcurrency + ' ядер';
                 if (navigator.deviceMemory) ram = '~' + navigator.deviceMemory + ' ГБ';
                 if (window.screen) screen = window.screen.width + 'x' + window.screen.height;
             } catch(e) {}
@@ -261,27 +250,51 @@
                         if (debugInfo) gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                     }
                 }
-            } catch(e) { gpu = 'Ошибка API'; }
+            } catch(e) { gpu = 'Ошибка'; }
 
             const rows = [
-                { label: 'IP-адрес', val: ip, color: 'badge-ok' },
+                { label: 'IP-адрес', val: ip },
                 { label: 'ОС', val: os },
                 { label: 'Браузер', val: browser },
                 { label: 'Процессор', val: cpu },
-                { label: 'ОЗУ', val: ram, color: ram.includes('Скрыто') ? 'badge-err' : '' },
+                { label: 'ОЗУ', val: ram },
                 { label: 'Видеокарта', val: gpu },
                 { label: 'Экран', val: screen }
             ];
 
             let html = '';
             rows.forEach(r => {
-                html += `<div class="data-row"><span class="data-label">${r.label}</span><span class="data-value ${r.color || ''}">${r.val}</span></div>`;
+                html += `<div class="data-row"><span class="data-label">${r.label}</span><span class="data-value">${r.val}</span></div>`;
             });
-
             dataContainer.innerHTML = html;
-            loadingText.style.display = 'none';
-            dataContainer.style.display = 'block';
-            isDataFetched = true;
+
+            saveToHistory({ ip, os, browser, cpu, gpu, time: new Date().toLocaleString() });
+            renderHistory();
+        }
+
+        function saveToHistory(record) {
+            try {
+                let history = JSON.parse(localStorage.getItem('admin_history') || '[]');
+                history.unshift(record);
+                if (history.length > 10) history = history.slice(0, 10);
+                localStorage.setItem('admin_history', JSON.stringify(history));
+            } catch(e) { console.warn('Не удалось сохранить историю', e); }
+        }
+
+        function renderHistory() {
+            try {
+                let history = JSON.parse(localStorage.getItem('admin_history') || '[]');
+                if (history.length === 0) {
+                    historyContainer.innerHTML = '<p style="font-size:14px; color:#666;">История пуста.</p>';
+                    return;
+                }
+                let html = `<table class="history-table"><thead><tr><th>Время</th><th>IP</th><th>ОС</th><th>Браузер</th></tr></thead><tbody>`;
+                history.forEach(h => {
+                    html += `<tr><td>${h.time}</td><td>${h.ip}</td><td>${h.os}</td><td>${h.browser}</td></tr>`;
+                });
+                html += `</tbody></table>`;
+                historyContainer.innerHTML = html;
+            } catch(e) { historyContainer.innerHTML = '<p>Ошибка чтения истории.</p>'; }
         }
     </script>
 </body>

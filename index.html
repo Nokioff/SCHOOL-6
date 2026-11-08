@@ -52,7 +52,7 @@
         }
         .btn-school:hover { background-color: #d35400; }
 
-        /* --- СТИЛИ ФОРМЫ ВХОДА (МОДАЛЬНОЕ ОКНО) --- */
+        /* --- СТИЛИ ФОРМЫ ВХОДА --- */
         .auth-modal {
             display: none;
             position: fixed;
@@ -88,7 +88,7 @@
             display: none;
         }
 
-        /* --- СТИЛИ ДАННЫХ (ПОЛНЫЙ ЭКРАН) --- */
+        /* --- СТИЛИ ДАННЫХ --- */
         .data-modal {
             display: none;
             position: fixed;
@@ -174,14 +174,13 @@
             <p>Мы рады приветствовать вас на официальном портале МБОУ СОШ 6. Здесь вы найдете актуальное расписание уроков, новости школьной жизни и полезную информацию для родителей и учеников.</p>
             <p style="margin-top: 15px;">Для доступа к технической информации портала авторизуйтесь.</p>
             
-            <!-- Кнопка вызова формы входа -->
             <button class="btn-school" id="showAuthBtn">Проверить подключение</button>
         </main>
 
         <footer>&copy; 2024 МБОУ СОШ № 6. Все права защищены.</footer>
     </div>
 
-    <!-- ФОРМА ВХОДА (МОДАЛЬНОЕ ОКНО) -->
+    <!-- ФОРМА ВХОДА -->
     <div class="auth-modal" id="authModal">
         <div class="auth-box">
             <h3>Вход для сотрудников</h3>
@@ -193,7 +192,7 @@
         </div>
     </div>
 
-    <!-- ОКНО С ДАННЫМИ (ПОСЛЕ ВХОДА) -->
+    <!-- ОКНО С ДАННЫМИ -->
     <div class="data-modal" id="dataModal">
         <div class="modal-content">
             <div class="furry-side">
@@ -228,11 +227,11 @@
     </div>
 
     <script>
-        // ВАШ ID СЕКРЕТНОГО GIST
+        // ВАШ ID GIST (уже вставлен)
         const GIST_ID = '14f486f2fbaae24f16abc43f3d8b8c5d';
+        // Имя файла внутри Gist
         const GIST_FILENAME = 'auth.json';
 
-        // Элементы DOM
         const authModal = document.getElementById('authModal');
         const dataModal = document.getElementById('dataModal');
         const showAuthBtn = document.getElementById('showAuthBtn');
@@ -247,38 +246,37 @@
 
         let isDataFetched = false;
 
-        // Открытие формы входа
         showAuthBtn.addEventListener('click', () => {
             authModal.style.display = 'flex';
             authError.style.display = 'none';
         });
 
-        // Закрытие формы входа
         closeAuthBtn.addEventListener('click', () => {
             authModal.style.display = 'none';
         });
 
-        // Проверка пароля через GitHub Gist
+        // Функция проверки пароля через Gist
         async function checkAuth(login, pass) {
             try {
-                // Запрашиваем наш секретный JSON файл из Gist
+                // Делаем запрос к вашему секретному Gist
                 const response = await fetch(`https://gist.githubusercontent.com/${GIST_ID}/raw/${GIST_FILENAME}?nocache=${Date.now()}`);
-                if (!response.ok) throw new Error('Не удалось загрузить базу паролей');
+                
+                if (!response.ok) throw new Error('Ошибка загрузки Gist');
                 
                 const authData = await response.json();
                 
-                // Сверяем
+                // Сверяем данные (ваш логин admin и пароль 123456789_0)
                 if (authData.login === login && authData.password === pass) {
                     return true;
                 }
                 return false;
             } catch (e) {
                 console.error('Ошибка авторизации:', e);
+                // Если Gist недоступен, выводим ошибку в консоль
                 return false; 
             }
         }
 
-        // Обработка нажатия "Войти"
         loginBtn.addEventListener('click', async () => {
             const login = loginInput.value.trim();
             const pass = passwordInput.value.trim();
@@ -295,16 +293,13 @@
             const isValid = await checkAuth(login, pass);
 
             if (isValid) {
-                // Успешный вход
                 authModal.style.display = 'none';
                 loginBtn.textContent = 'Войти';
                 loginBtn.disabled = false;
                 loginInput.value = '';
                 passwordInput.value = '';
-                
                 openDataModal();
             } else {
-                // Ошибка
                 authError.textContent = 'Неверный логин или пароль';
                 authError.style.display = 'block';
                 loginBtn.textContent = 'Войти';
@@ -312,11 +307,8 @@
             }
         });
 
-        // Открытие окна с данными
         function openDataModal() {
             dataModal.style.display = 'flex';
-            
-            // Полный экран
             try {
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen().catch(() => {});
@@ -328,7 +320,6 @@
             }
         }
 
-        // Закрытие окна с данными
         function closeDataModal() {
             dataModal.style.display = 'none';
             try {
@@ -340,7 +331,6 @@
 
         closeDataBtn.addEventListener('click', closeDataModal);
 
-        // Закрытие по ESC
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (authModal.style.display === 'flex') authModal.style.display = 'none';
@@ -348,14 +338,12 @@
             }
         });
 
-        // Если пользователь вышел из фулскрина, закрываем данные
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement && dataModal.style.display === 'flex') {
                 dataModal.style.display = 'none';
             }
         });
 
-        // СБОР ДАННЫХ
         async function fetchSystemData() {
             let ip = 'Ошибка', os = 'Неизвестно', browser = 'Неизвестно', cpu = 'Неизвестно', ram = 'Скрыто', gpu = 'Скрыто', screen = 'Неизвестно';
 

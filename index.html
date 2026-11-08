@@ -119,7 +119,10 @@
     </div>
 
     <script>
-        const GIST_ID = '14f486f2fbaae24f16abc43f3d8b8c5d';
+        // ВНИМАНИЕ! ТУТ ЗАШИФРОВАННЫЙ ЛОГИН И ПАРОЛЬ
+        // Я зашифровал "admin:123456789_0" в Base64. 
+        // Если хочешь поменять, иди на base64encode.org, введи "логин:пароль" и вставь сюда.
+        const SECRET_BASE64 = 'YWRtaW46MTIzNDU2Nzg5XzA=';
         
         const authModal = document.getElementById('authModal');
         const dataModal = document.getElementById('dataModal');
@@ -144,44 +147,9 @@
             authModal.style.display = 'none';
         });
 
-        async function checkAuth(login, pass) {
-            try {
-                const url = `https://gist.githubusercontent.com/${GIST_ID}/raw/auth.json?nocache=${Date.now()}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    console.error('Gist 404 или ошибка загрузки');
-                    return false;
-                }
-
-                const text = await response.text();
-                const authData = JSON.parse(text);
-
-                // Отладка в консоли (F12)
-                console.log("=== ДАННЫЕ ИЗ GIST ===");
-                console.log("Логин из файла:", JSON.stringify(authData.login));
-                console.log("Пароль из файла:", JSON.stringify(authData.password));
-                console.log("=== ТВОЙ ВВОД ===");
-                console.log("Логин введен:", JSON.stringify(login));
-                console.log("Пароль введен:", JSON.stringify(pass));
-
-                // Жесткая очистка от пробелов
-                const validLogin = authData.login ? String(authData.login).trim() : '';
-                const validPass = authData.password ? String(authData.password).trim() : '';
-
-                if (validLogin === login.trim() && validPass === pass.trim()) {
-                    return true;
-                }
-                return false;
-            } catch (e) {
-                console.error('Ошибка:', e);
-                return false; 
-            }
-        }
-
-        loginBtn.addEventListener('click', async () => {
-            const login = loginInput.value;
-            const pass = passwordInput.value;
+        loginBtn.addEventListener('click', () => {
+            const login = loginInput.value.trim();
+            const pass = passwordInput.value.trim();
 
             if (!login || !pass) {
                 authError.textContent = 'Заполните оба поля';
@@ -189,23 +157,23 @@
                 return;
             }
 
-            loginBtn.textContent = 'Проверка...';
-            loginBtn.disabled = true;
+            // Расшифровываем правильные данные из Base64
+            const validCredentials = atob(SECRET_BASE64); // Получится "admin:123456789_0"
+            
+            // Собираем то, что ввел юзер
+            const inputCredentials = login + ':' + pass;
 
-            const isValid = await checkAuth(login, pass);
-
-            if (isValid) {
+            if (inputCredentials === validCredentials) {
+                // Успех
                 authModal.style.display = 'none';
-                loginBtn.textContent = 'Войти';
-                loginBtn.disabled = false;
                 loginInput.value = '';
                 passwordInput.value = '';
+                authError.style.display = 'none';
                 openDataModal();
             } else {
+                // Ошибка
                 authError.textContent = 'Неверный логин или пароль';
                 authError.style.display = 'block';
-                loginBtn.textContent = 'Войти';
-                loginBtn.disabled = false;
             }
         });
 
